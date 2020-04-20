@@ -26,7 +26,7 @@ public final class HomePresenterImpl implements IHomePresenter {
     @Override
     public void getCategories() {
         if (mCallback != null) {
-           // mCallback.OnLoading();
+            mCallback.OnLoading();
         }
         Retrofit retrofit = RetrofitManager.getInstance().getRetrofit();
         Api api = retrofit.create(Api.class);
@@ -40,18 +40,19 @@ public final class HomePresenterImpl implements IHomePresenter {
                 if (code == HttpsURLConnection.HTTP_OK) {
                     Categories categories = response.body();
                     if (mCallback != null) {
+                        //categories = null;
                         if (categories == null || categories.getData().size() == 0) {
-                           // mCallback.OnEmpty();
+                            mCallback.OnEmpty();
                         } else {
+                            LogUtils.d(HomePresenterImpl.this, categories.toString());
+                            mCallback.onCategoriesLoaded(categories);
                         }
-                        LogUtils.d(HomePresenterImpl.this, categories.toString());
-                        mCallback.onCategoriesLoaded(categories);
                     }
                 } else {
                     // 请求失败
                     LogUtils.i(HomePresenterImpl.this, "请求失败");
                     if (mCallback != null) {
-                       // mCallback.OnError();
+                         mCallback.OnError();
                     }
                 }
             }
@@ -61,19 +62,19 @@ public final class HomePresenterImpl implements IHomePresenter {
                 // 加载失败
                 LogUtils.i(HomePresenterImpl.this, "请求失败" + t);
                 if (mCallback != null) {
-                    //mCallback.OnError();
+                    mCallback.OnError();
                 }
             }
         });
     }
 
     @Override
-    public void registerCallback(IHomeCallback callback) {
+    public void registerViewCallback(IHomeCallback callback) {
         this.mCallback = callback;
     }
 
     @Override
-    public void unRegisterCallback(IHomeCallback callback) {
+    public void unRegisterViewCallback(IHomeCallback callback) {
         mCallback = null;
     }
 }

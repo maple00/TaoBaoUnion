@@ -1,6 +1,8 @@
 package com.sxs.taobaounion.ui.fragment;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.viewpager.widget.ViewPager;
 
@@ -11,9 +13,9 @@ import com.sxs.taobaounion.model.domain.Categories;
 import com.sxs.taobaounion.presenter.IHomePresenter;
 import com.sxs.taobaounion.presenter.impl.HomePresenterImpl;
 import com.sxs.taobaounion.ui.adapter.HomePagerAdapter;
-import com.sxs.taobaounion.utils.LogUtils;
 import com.sxs.taobaounion.view.IHomeCallback;
-import com.sxs.tools.annotation.ViewInject;
+
+import butterknife.BindView;
 
 /**
  * @Author: a797s
@@ -22,10 +24,10 @@ import com.sxs.tools.annotation.ViewInject;
  */
 public class HomeFragment extends BaseFragment implements IHomeCallback {
 
-    @ViewInject(R.id.tl_indicator)
-    private TabLayout mIndicator;
-    @ViewInject(R.id.vp_pager)
-    private ViewPager mHomePager;
+    @BindView(R.id.tl_indicator)
+    TabLayout mIndicator;
+    @BindView(R.id.vp_pager)
+    ViewPager mHomePager;
 
     private IHomePresenter mHomePresenter;
     private HomePagerAdapter mHomePagerAdapter;
@@ -39,7 +41,7 @@ public class HomeFragment extends BaseFragment implements IHomeCallback {
     protected void initPresenter() {
         // 创建presenter
         mHomePresenter = new HomePresenterImpl();
-        mHomePresenter.registerCallback(this);
+        mHomePresenter.registerViewCallback(this);
     }
 
     @Override
@@ -51,6 +53,11 @@ public class HomeFragment extends BaseFragment implements IHomeCallback {
     }
 
     @Override
+    protected View LoadRootView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_base_home, container, false);
+    }
+
+    @Override
     protected void loadData() {
         // setUpState(State.LOADING);
         // 加载数据
@@ -59,32 +66,41 @@ public class HomeFragment extends BaseFragment implements IHomeCallback {
 
     @Override
     public void onCategoriesLoaded(Categories categories) {
-        LogUtils.d(this, "111111111");
+        setUpState(State.SUCCESS);
         // 加载数据回调
-        if (categories != null){            // 防止数据还没有回来就取消了View
+        if (categories != null) {            // 防止数据还没有回来就取消了View
             mHomePagerAdapter.setCategories(categories);
         }
     }
 
-//    @Override
-//    public void OnLoading() {
-//        setUpState(State.LOADING);
-//    }
-//
-//    @Override
-//    public void OnError() {
-//        setUpState(State.ERROR);
-//    }
-//
-//    @Override
-//    public void OnEmpty() {
-//        setUpState(State.EMPTY);
-//    }
+    @Override
+    public void OnLoading() {
+        setUpState(State.LOADING);
+    }
+
+    @Override
+    public void OnError() {
+        setUpState(State.ERROR);
+    }
+
+    @Override
+    public void OnEmpty() {
+        setUpState(State.EMPTY);
+    }
 
     @Override
     protected void release() {
         if (mHomePresenter != null) {
-            mHomePresenter.unRegisterCallback(this);
+            mHomePresenter.unRegisterViewCallback(this);
+        }
+    }
+
+    @Override
+    protected void onRetryOnClick() {
+        // 网络错误，点击了重试
+        // 重新加载分类
+        if (mHomePresenter != null){
+            mHomePresenter.getCategories();
         }
     }
 }

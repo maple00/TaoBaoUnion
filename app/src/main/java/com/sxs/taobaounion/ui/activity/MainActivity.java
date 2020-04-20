@@ -14,14 +14,15 @@ import com.sxs.taobaounion.ui.fragment.RedPacketFragment;
 import com.sxs.taobaounion.ui.fragment.SearchFragment;
 import com.sxs.taobaounion.ui.fragment.SelectedFragment;
 import com.sxs.taobaounion.utils.LogUtils;
-import com.sxs.tools.annotation.ViewBind;
-import com.sxs.tools.annotation.ViewInject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = this.getClass().getSimpleName();
-    @ViewInject(R.id.bnv_bar)
-    private BottomNavigationView mNavigationView;
+    @BindView(R.id.bnv_bar)
+    BottomNavigationView mNavigationView;
     private HomeFragment mHomeFragment;
     private RedPacketFragment mRedPacketFragment;
     private SearchFragment mSearchFragment;
@@ -33,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // annotation bind
-        ViewBind.inject(this);
+       // ViewBind.inject(this);
+        ButterKnife.bind(this);
         initListener();
         mHomeFragment = new HomeFragment();
         mRedPacketFragment = new RedPacketFragment();

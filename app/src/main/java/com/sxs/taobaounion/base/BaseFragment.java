@@ -11,7 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.sxs.taobaounion.R;
-import com.sxs.tools.annotation.ViewBind;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * @Author: a797s
@@ -28,12 +31,34 @@ public abstract class BaseFragment extends Fragment {
 
 
     private State currentState = State.NONE;
+    private Unbinder mBind;
 
     public enum State {
         NONE, LOADING, SUCCESS, ERROR, EMPTY
     }
 
     private FrameLayout mBaseContainer;
+
+    /**
+     * 点击网络重试
+     */
+    @OnClick(R.id.ll_network_error_tips)
+    public void retry(View view) {
+        switch (view.getId()) {
+            case R.id.ll_network_error_tips:
+                // LogUtils.d(this, "on retry...");
+                onRetryOnClick();
+                break;
+        }
+    }
+
+
+    /**
+     * 如果子类fragment需要知道 网络错误之后的点击，覆盖方法即可
+     */
+    protected void onRetryOnClick() {
+
+    }
 
     @Nullable
     @Override
@@ -42,14 +67,15 @@ public abstract class BaseFragment extends Fragment {
         View rootView = LoadRootView(inflater, container);
         mBaseContainer = rootView.findViewById(R.id.fl_state_container);
         loadStateView(inflater, container);
-        ViewBind.inject(this, rootView);
+        // ViewBind.inject(this, rootView);
+        mBind = ButterKnife.bind(this, rootView);
         initView(rootView);
         initPresenter();
         loadData();
         return rootView;
     }
 
-    private View LoadRootView(LayoutInflater inflater, ViewGroup container) {
+    protected View LoadRootView(LayoutInflater inflater, ViewGroup container) {
         return inflater.inflate(R.layout.fragment_base_state, container, false);
     }
 
@@ -74,6 +100,9 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (mBind != null) {
+            mBind.unbind();
+        }
         release();
     }
 
@@ -84,6 +113,9 @@ public abstract class BaseFragment extends Fragment {
      * @param container
      */
     private void loadStateView(LayoutInflater inflater, ViewGroup container) {
+        // 成功的view、
+        mSuccessView = loadSuccessView(inflater, container);
+        mBaseContainer.addView(mSuccessView);
         // LoadingView
         mLoadingView = loadingView(inflater, container);
         mBaseContainer.addView(mLoadingView);
@@ -93,10 +125,7 @@ public abstract class BaseFragment extends Fragment {
         // emptyView
         mEmptyView = loadEmptyView(inflater, container);
         mBaseContainer.addView(mEmptyView);
-        // 成功的view、
-        mSuccessView = loadSuccessView(inflater, container);
-        mBaseContainer.addView(mSuccessView);
-//         setUpState(State.NONE);
+        setUpState(State.NONE);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.sxs.taobaounion.presenter;
 
+import com.sxs.taobaounion.base.IBasePresenter;
 import com.sxs.taobaounion.view.IHomeCallback;
 
 /**
@@ -7,22 +8,11 @@ import com.sxs.taobaounion.view.IHomeCallback;
  * @Date: 2020/4/17 14:30
  * @Desc:
  */
-public interface IHomePresenter {
+public interface IHomePresenter extends IBasePresenter<IHomeCallback> {
 
     /**
      * 获取商品分类
      */
     void getCategories();
 
-    /**
-     * 注册UI通知接口
-     * @param callback
-     */
-    void registerCallback(IHomeCallback callback);
-
-    /**
-     * 取消UI的通知接口
-     * @param callback
-     */
-    void unRegisterCallback(IHomeCallback callback);
 }

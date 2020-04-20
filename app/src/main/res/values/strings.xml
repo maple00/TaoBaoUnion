@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TaoBaoUnion</string>
+    <string name="text_network_errot_tips">网络错出错，请点击重试</string>
 </resources>
