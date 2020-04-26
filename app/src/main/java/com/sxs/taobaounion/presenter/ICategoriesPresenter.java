@@ -12,11 +12,10 @@ public interface ICategoriesPresenter extends IBasePresenter<ICategoryPagerBallB
 
     /**
      * 根据分类id获取内容
-     * @param categoryId
      */
     void getContentByCategoryId(int categoryId);
 
-    void loadMore(int categoryId);
+    void loadMore(int materialId);
 
-    void reload(int categoryId);
+    void reload();
 }

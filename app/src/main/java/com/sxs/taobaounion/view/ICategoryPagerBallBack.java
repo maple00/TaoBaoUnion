@@ -1,6 +1,6 @@
 package com.sxs.taobaounion.view;
 
-import com.sxs.taobaounion.base.IBasePresenter;
+import com.sxs.taobaounion.base.IBaseCallBack;
 import com.sxs.taobaounion.model.domain.HomePagerBean;
 
 import java.util.List;
@@ -10,61 +10,40 @@ import java.util.List;
  * @Date: 2020/4/20 13:11
  * @Desc: 分类pager
  */
-public interface ICategoryPagerBallBack extends IBasePresenter {
+public interface ICategoryPagerBallBack extends IBaseCallBack {
 
     /**
      * 数据加载回来
      *
      * @param contents
      */
-    void onContentLoaded(List<HomePagerBean.DataBean> contents, int categoryId);
+    void onContentLoaded(List<HomePagerBean.DataBean> contents);
 
-    /**
-     * 加载中
-     *
-     * @param categoryId
-     */
-    void onLoading(int categoryId);
+    int getCategoryId();
 
     /**
      * 网络错误
      *
-     * @param categoryId
      */
-    void onError(int categoryId);
-
-    /**
-     * 数据为空
-     *
-     * @param categoryId
-     */
-    void onEmpty(int categoryId);
-
-    /**
-     * 网络错误
-     *
-     * @param categoryId
-     */
-    void onLoadMoreError(int categoryId);
+    void onLoadMoreError();
 
     /**
      * 没有更多内容
      *
-     * @param categoryId
      */
-    void onLoadMoreEmpty(int categoryId);
+    void onLoadMoreEmpty();
 
     /**
      * 加载了更多的内容
      *
      * @param contents
      */
-    void onLoaderMoreLoaded(List<HomePagerBean.DataBean> contents, int categoryId);
+    void onLoaderMoreLoaded(List<HomePagerBean.DataBean> contents);
 
     /**
      * 轮播图内容
      *
      * @param contents
      */
-    void onLooperListLoaded(List<HomePagerBean.DataBean> contents, int categoryId);
+    void onLooperListLoaded(List<HomePagerBean.DataBean> contents);
 }
